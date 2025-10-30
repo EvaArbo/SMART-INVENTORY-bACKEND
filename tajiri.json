@@ -1,0 +1,46 @@
+{
+  "base": "./APP",
+  "prisma": "./prisma/schema.prisma",
+  "type": "commonjs",
+  "fieldSkip": [
+    "id",
+    "created_at",
+    "updated_at"
+  ],
+  "structure": {
+    "item": [
+      "item"
+    ],
+    "null": [
+      "null"
+    ],
+    "order": [
+      "order"
+    ],
+    "organization": [
+      "organization"
+    ],
+    "profile_info": [
+      "profile_info"
+    ],
+    "renamedreturn": [
+      "renamedreturn"
+    ],
+    "request": [
+      "request"
+    ],
+    "role": [
+      "role"
+    ],
+    "scan_history": [
+      "scan_history"
+    ],
+    "user": [
+      "user",
+      "user_password"
+    ],
+    "vendor": [
+      "vendor"
+    ]
+  }
+}

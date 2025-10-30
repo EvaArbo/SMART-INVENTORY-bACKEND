@@ -1,0 +1,65 @@
+{
+  "profile_id": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "user_id": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "user_name": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "profile_picture": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "email": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "phone_number": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "password": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  }
+}

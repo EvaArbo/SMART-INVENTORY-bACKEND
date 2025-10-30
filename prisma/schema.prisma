@@ -1,0 +1,166 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model item {
+  item_id       String          @id(map: "items_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  org_id        String?         @db.Uuid
+  item_name     String          @db.VarChar(255)
+  serial_id     String?         @unique(map: "items_serial_id_key") @db.VarChar(100)
+  description   String?         @db.VarChar(1000)
+  condition     String?         @db.VarChar(100)
+  purchase_date DateTime?       @db.Date
+  assigned_to   String?         @db.Uuid
+  status        String?         @db.VarChar(50)
+  location      String?         @db.VarChar(255)
+  item_pic      String?         @db.VarChar(500)
+  vendor_id     String?         @db.Uuid
+  user          user?           @relation(fields: [assigned_to], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "items_assigned_to_fkey")
+  organization  organization?   @relation(fields: [org_id], references: [org_id], onDelete: NoAction, onUpdate: NoAction, map: "items_org_id_fkey")
+  vendor        vendor?         @relation(fields: [vendor_id], references: [vendor_id], onDelete: NoAction, onUpdate: NoAction, map: "items_vendor_id_fkey")
+  order         order[]
+  request       request[]
+  Renamedreturn Renamedreturn[]
+}
+
+model order {
+  order_id     String        @id(map: "orders_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  org_id       String?       @db.Uuid
+  vendor_id    String?       @db.Uuid
+  user_id      String?       @db.Uuid
+  asset_id     String?       @db.Uuid
+  quantity     Int?
+  total_cost   Decimal?      @db.Decimal(10, 2)
+  order_date   DateTime?     @default(now()) @db.Timestamp(6)
+  status       String?       @db.VarChar(50)
+  item         item?         @relation(fields: [asset_id], references: [item_id], onDelete: NoAction, onUpdate: NoAction, map: "orders_asset_id_fkey")
+  organization organization? @relation(fields: [org_id], references: [org_id], onDelete: NoAction, onUpdate: NoAction, map: "orders_org_id_fkey")
+  user         user?         @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "orders_user_id_fkey")
+  vendor       vendor?       @relation(fields: [vendor_id], references: [vendor_id], onDelete: NoAction, onUpdate: NoAction, map: "orders_vendor_id_fkey")
+}
+
+model organization {
+  org_id       String         @id(map: "organizations_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  org_name     String         @db.VarChar(255)
+  org_location String?        @db.VarChar(255)
+  org_picture  String?        @db.VarChar(500)
+  bio          String?        @db.VarChar(1000)
+  created_at   DateTime?      @default(now()) @db.Timestamp(6)
+  item         item[]
+  order        order[]
+  request      request[]
+  role         role[]
+  scan_history scan_history[]
+  user         user[]
+  vendor       vendor[]
+}
+
+model profile_info {
+  profile_id      String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id         String? @db.Uuid
+  user_name       String? @db.VarChar(255)
+  profile_picture String? @db.VarChar(500)
+  email           String? @db.VarChar(255)
+  phone_number    String? @db.VarChar(50)
+  password        String? @db.VarChar(255)
+  user            user?   @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model request {
+  request_id   String        @id(map: "requests_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id      String?       @db.Uuid
+  org_id       String?       @db.Uuid
+  item_name    String?       @db.VarChar(255)
+  item_id      String?       @db.Uuid
+  request_date DateTime?     @default(now()) @db.Timestamp(6)
+  due_date     DateTime?     @db.Timestamp(6)
+  status       String?       @db.VarChar(50)
+  item         item?         @relation(fields: [item_id], references: [item_id], onDelete: NoAction, onUpdate: NoAction, map: "requests_item_id_fkey")
+  organization organization? @relation(fields: [org_id], references: [org_id], onDelete: NoAction, onUpdate: NoAction, map: "requests_org_id_fkey")
+  user         user?         @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "requests_user_id_fkey")
+}
+
+/// This model has been renamed to 'Renamedreturn' during introspection, because the original name 'return' is reserved.
+model Renamedreturn {
+  return_id           String    @id(map: "returns_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  asset_id            String?   @db.Uuid
+  user_id             String?   @db.Uuid
+  reason              String?   @db.VarChar(1000)
+  return_date         DateTime? @default(now()) @db.Timestamp(6)
+  condition_on_return String?   @db.VarChar(255)
+  item                item?     @relation(fields: [asset_id], references: [item_id], onDelete: NoAction, onUpdate: NoAction, map: "returns_asset_id_fkey")
+  user                user?     @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "returns_user_id_fkey")
+
+  @@map("return")
+}
+
+model role {
+  role_id      String        @id(map: "roles_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  org_id       String?       @db.Uuid
+  role_name    String        @db.VarChar(100)
+  description  String?
+  permissions  String?
+  created_at   DateTime?     @default(now()) @db.Timestamp(6)
+  organization organization? @relation(fields: [org_id], references: [org_id], onDelete: NoAction, onUpdate: NoAction, map: "roles_org_id_fkey")
+  user         user[]
+}
+
+model scan_history {
+  scan_id      String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id      String?       @db.Uuid
+  org_id       String?       @db.Uuid
+  serial_id    String?       @db.VarChar(100)
+  item_name    String?       @db.VarChar(255)
+  scanned_at   DateTime?     @default(now()) @db.Timestamp(6)
+  due_date     DateTime?     @db.Timestamp(6)
+  status       String?       @db.VarChar(50)
+  organization organization? @relation(fields: [org_id], references: [org_id], onDelete: NoAction, onUpdate: NoAction)
+  user         user?         @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model user {
+  user_id       String          @id(map: "users_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  org_id        String?         @db.Uuid
+  role_id       String?         @db.Uuid
+  full_name     String          @db.VarChar(255)
+  email         String          @unique(map: "users_email_key") @db.VarChar(255)
+  password      String          @db.VarChar(255)
+  status        String?         @db.VarChar(50)
+  user_pic      String?         @db.VarChar(500)
+  department    String?         @db.VarChar(100)
+  branch        String?         @db.VarChar(100)
+  created_at    DateTime?       @default(now()) @db.Timestamp(6)
+  item          item[]
+  order         order[]
+  profile_info  profile_info[]
+  request       request[]
+  Renamedreturn Renamedreturn[]
+  scan_history  scan_history[]
+  organization  organization?   @relation(fields: [org_id], references: [org_id], onDelete: NoAction, onUpdate: NoAction, map: "users_org_id_fkey")
+  role          role?           @relation(fields: [role_id], references: [role_id], onDelete: NoAction, onUpdate: NoAction, map: "users_role_id_fkey")
+  user_password user_password?
+}
+
+model user_password {
+  id       String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id  String @unique @db.Uuid
+  password String
+  user     user   @relation(fields: [user_id], references: [user_id], onUpdate: NoAction)
+}
+
+model vendor {
+  vendor_id    String        @id(map: "vendors_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  org_id       String?       @db.Uuid
+  vendor_name  String        @db.VarChar(255)
+  email        String?       @db.VarChar(255)
+  phone        String?       @db.VarChar(50)
+  address      String?       @db.VarChar(500)
+  item         item[]
+  order        order[]
+  organization organization? @relation(fields: [org_id], references: [org_id], onDelete: NoAction, onUpdate: NoAction, map: "vendors_org_id_fkey")
+}

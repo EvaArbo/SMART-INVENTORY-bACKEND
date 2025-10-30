@@ -4,7 +4,7 @@ const cors = require("cors");
 
 const app = express();
 
-
+// Use 3000 for HTTP server; 5432 is reserved for PostgreSQL
 const PORT = process.env.PORT || 5432;
 
 
@@ -26,8 +26,8 @@ app.get("/", (req, res) => {
 
   res.status(200).json({
     status: "success",
-    method: method,
-    message: "API is working"
+    method,
+    message: "API is working",
   });
 });
 
@@ -38,5 +38,5 @@ app.use((req, res) => {
 
 
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`🚀 Server is running on http://localhost:${PORT}`);
 });

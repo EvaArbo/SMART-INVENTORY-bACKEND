@@ -10,7 +10,8 @@ const PORT = process.env.PORT || 3000;
 // Route imports
 const CONFIG = require("./APP/Routes/Config");
 const SCHEME = require("./APP/Routes/Scheme");
-const REQUESTS = require("./APP/Routes/Requests"); // ✅ Added Requests route
+const REQUESTS = require("./APP/Routes/Requests");         // ✅ Requests route
+const USER_MANAGEMENT = require("./APP/Routes/UserManagement"); // ✅ User Management route
 
 // Middleware
 app.use(cors());
@@ -19,7 +20,8 @@ app.use(express.json());
 // Route bindings
 app.use("/config", CONFIG);
 app.use("/scheme", SCHEME);
-app.use("/requests", REQUESTS); // ✅ Bind Requests route
+app.use("/requests", REQUESTS);
+app.use("/user-management", USER_MANAGEMENT);
 
 // Root route
 app.get("/", (req, res) => {

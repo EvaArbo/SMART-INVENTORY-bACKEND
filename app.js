@@ -5,7 +5,7 @@ const cors = require("cors");
 const app = express();
 
 // Use 3000 for HTTP server; 5432 is reserved for PostgreSQL
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5432;
 
 // Route imports
 const CONFIG = require("./APP/Routes/Config");

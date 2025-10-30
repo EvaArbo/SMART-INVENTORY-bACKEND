@@ -1,5 +1,5 @@
 const express = require("express");
-const nano = require("nano")(process.env.COUCHDB_URL);
+const nano = require("nano")(process.env.COUCHDBURL);
 const router = express.Router();
 
 const db = nano.db.use("requests"); // Ensure this DB exists

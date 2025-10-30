@@ -1,0 +1,41 @@
+npm install bcrypt cors csv-parser dotenv express fuse.js html-pdf-node jsonwebtoken multer nano uuid
+npm install nodemon
+
+code@code-HP-EliteBook-x360-1030-G2:~/SMART-INVENTORY-bACKEND/App$ psql --version
+psql (PostgreSQL) 18.0 (Ubuntu 18.0-1.pgdg24.04+3)
+code@code-HP-EliteBook-x360-1030-G2:~/SMART-INVENTORY-bACKEND/App$ psql -U sims_admin -h 172.105.244.140 -d sims
+Password for user sims_admin: 
+psql (18.0 (Ubuntu 18.0-1.pgdg24.04+3))
+SSL connection (protocol: TLSv1.3, cipher: TLS_AES_256_GCM_SHA384, compression: off, ALPN: postgresql)
+Type "help" for help.
+
+sims=> \dt
+//start server
+node app.js
+npm start 
+
+//installin nodemonnpm 
+install --save-dev nodemon # or using yarn: yarn add nodemon -D
+//installing prisma 
+npm install prisma --save-dev
+npx prisma init --datasource-provider postgresql --output ../generated/prisma
+
+//pullin data from beekeeper
+npx prisma db pull
+//after making changes
+npx prisma generate
+//installing couch db
+sudo apt update
+sudo apt install -y couchdb
+
+//set up tajiri
+git clone https://github.com/yourname/tajiri.git
+cd tajiri
+npm install
+npm link
+tajiri init
+
+//install prisma client
+npx install@prisma/client
+npx prisma db pull
+npx prisma generate

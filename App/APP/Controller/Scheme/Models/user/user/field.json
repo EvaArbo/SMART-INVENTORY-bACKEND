@@ -1,0 +1,92 @@
+{
+  "user_id": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "org_id": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "role_id": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "full_name": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "email": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "password": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "status": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "user_pic": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "department": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "branch": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  }
+}

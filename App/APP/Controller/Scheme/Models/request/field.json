@@ -1,0 +1,74 @@
+{
+  "request_id": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "user_id": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "org_id": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "item_name": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "item_id": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "request_date": {
+    "transform": [
+      "dateTime"
+    ],
+    "validation": {
+      "dateTime": true
+    },
+    "required": false
+  },
+  "due_date": {
+    "transform": [
+      "dateTime"
+    ],
+    "validation": {
+      "dateTime": true
+    },
+    "required": false
+  },
+  "status": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  }
+}

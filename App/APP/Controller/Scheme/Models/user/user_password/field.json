@@ -1,0 +1,20 @@
+{
+  "user_id": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": true
+  },
+  "password": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": true
+  }
+}

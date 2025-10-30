@@ -1,0 +1,47 @@
+{
+  "role_id": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "org_id": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "role_name": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "description": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "permissions": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  }
+}

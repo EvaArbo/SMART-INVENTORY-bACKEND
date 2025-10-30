@@ -1,0 +1,81 @@
+{
+  "order_id": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "org_id": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "vendor_id": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "user_id": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "asset_id": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  },
+  "quantity": {
+    "transform": [
+      "int"
+    ],
+    "validation": {
+      "number": true
+    },
+    "required": false
+  },
+  "total_cost": {
+    "transform": [],
+    "validation": {
+      "number": true
+    },
+    "required": false
+  },
+  "order_date": {
+    "transform": [
+      "dateTime"
+    ],
+    "validation": {
+      "dateTime": true
+    },
+    "required": false
+  },
+  "status": {
+    "transform": [
+      "str"
+    ],
+    "validation": {
+      "str": true
+    },
+    "required": false
+  }
+}

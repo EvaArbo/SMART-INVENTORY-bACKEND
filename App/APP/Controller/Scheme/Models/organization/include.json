@@ -1,0 +1,9 @@
+{
+  "item": true,
+  "order": true,
+  "request": true,
+  "role": true,
+  "scan_history": true,
+  "user": true,
+  "vendor": true
+}

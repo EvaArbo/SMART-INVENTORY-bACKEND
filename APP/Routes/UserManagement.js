@@ -2,9 +2,9 @@ const express = require("express");
 const nano = require("nano")(process.env.COUCHDBURL);
 const router = express.Router();
 
-const db = nano.db.use("user_scans"); // Make sure this DB exists
+const db = nano.db.use("user_scans"); 
 
-// 🔍 Get all scanned users (with optional search)
+
 router.get("/", async (req, res) => {
   const { q } = req.query;
 
@@ -22,12 +22,12 @@ router.get("/", async (req, res) => {
 
     res.json(users);
   } catch (err) {
-    console.error("Error fetching users:", err);
+    console.error("Error fetching users:", err.message);
     res.status(500).json({ error: "Failed to fetch users" });
   }
 });
 
-// 🆕 Create a new scan entry
+
 router.post("/", async (req, res) => {
   const { serial, name, date, status, icon } = req.body;
 
@@ -46,14 +46,14 @@ router.post("/", async (req, res) => {
     };
 
     const response = await db.insert(newUser);
-    res.json({ message: "Scan entry created", id: response.id });
+    res.status(201).json({ message: "Scan entry created", id: response.id });
   } catch (err) {
-    console.error("Error creating scan entry:", err);
+    console.error("Error creating scan entry:", err.message);
     res.status(500).json({ error: "Failed to create scan entry" });
   }
 });
 
-// ✅ Update user scan status
+
 router.patch("/:id", async (req, res) => {
   const { status } = req.body;
 
@@ -69,7 +69,7 @@ router.patch("/:id", async (req, res) => {
     const response = await db.insert(doc);
     res.json({ message: "Status updated", id: response.id });
   } catch (err) {
-    console.error("Error updating status:", err);
+    console.error("Error updating status:", err.message);
     res.status(500).json({ error: "Failed to update status" });
   }
 });

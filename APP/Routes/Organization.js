@@ -1,12 +1,12 @@
 const express = require("express");
 const multer = require("multer");
-const nano = require("nano")(process.env.COUCHDBURL);
+const { PrismaClient } = require("@prisma/client");
 const router = express.Router();
+const prisma = new PrismaClient();
 
 const upload = multer({ storage: multer.memoryStorage() });
-const db = nano.db.use(process.env.COUCHDB_DB);
 
-// Upload logo
+
 router.post("/upload-logo/:orgId", upload.single("logo"), async (req, res) => {
   const { orgId } = req.params;
   const file = req.file;
@@ -14,37 +14,41 @@ router.post("/upload-logo/:orgId", upload.single("logo"), async (req, res) => {
   if (!file) return res.status(400).json({ error: "No file uploaded" });
 
   try {
-    let doc;
-    try {
-      doc = await db.get(orgId);
-    } catch {
-      doc = await db.insert({ _id: orgId });
+    const org = await prisma.organization.findUnique({ where: { org_id: orgId } });
+
+    if (!org) {
+      return res.status(404).json({ error: "Organization not found" });
     }
 
-    const rev = doc._rev || (await db.get(orgId))._rev;
+    const updated = await prisma.organization.update({
+      where: { org_id: orgId },
+      data: {
+        org_picture: file.originalname 
+      }
+    });
 
-    await db.attachment.insert(
-      orgId,
-      file.originalname,
-      file.buffer,
-      file.mimetype,
-      { rev }
-    );
-
-    res.json({ message: "Logo uploaded", id: orgId });
+    res.json({ message: "Logo uploaded", org_id: updated.org_id });
   } catch (err) {
-    console.error("Upload error:", err);
+    console.error("Upload error:", err.message);
     res.status(500).json({ error: "Upload failed" });
   }
 });
 
-// Get organization details
+
 router.get("/:orgId", async (req, res) => {
   try {
-    const doc = await db.get(req.params.orgId);
-    res.json(doc);
+    const org = await prisma.organization.findUnique({
+      where: { org_id: req.params.orgId }
+    });
+
+    if (!org) {
+      return res.status(404).json({ error: "Organization not found" });
+    }
+
+    res.json(org);
   } catch (err) {
-    res.status(404).json({ error: "Organization not found" });
+    console.error("Fetch error:", err.message);
+    res.status(500).json({ error: "Failed to fetch organization" });
   }
 });
 

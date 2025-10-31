@@ -2,6 +2,7 @@ const router = require("express").Router();
 const prisma = require("../Controller/Prisma");
 const imageService = require("../Controller/ImageService");
 const multer = require("multer");
+const validateItem = require("../Middleware/validation/itemValidation");
 
 const upload = multer({ storage: multer.memoryStorage() });
 
@@ -36,13 +37,19 @@ router.get("/", async (req, res) => {
 router.get("/scan/:code", async (req, res) => {
   try {
     const { code } = req.params;
+
+    // Helper to detect UUID format. Prisma will attempt to coerce a value
+    // into a UUID for the `item_id` field, which throws when the supplied
+    // string is not a valid UUID (e.g. serial like "TEST-001"). Only include
+    // the item_id comparison when the code is a valid UUID.
+    const isUuid = (val) => /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(val);
+
+    const where = isUuid(code)
+      ? { OR: [{ serial_id: code }, { item_id: code }] }
+      : { serial_id: code };
+
     const item = await prisma.item.findFirst({
-      where: {
-        OR: [
-          { serial_id: code },
-          { item_id: code }
-        ]
-      },
+      where,
       include: { user: true, organization: true, vendor: true }
     });
     
@@ -70,20 +77,34 @@ router.get("/:item_id", async (req, res) => {
 });
 
 // Create new item with image
-router.post("/", upload.single("image"), async (req, res) => {
+router.post("/", upload.single("image"), validateItem, async (req, res) => {
   try {
-    const { item_name, description, serial_id, location, org_id, vendor_id } = req.body;
+    const { 
+      item_name,
+      org_id,
+      serial_id,
+      description,
+      condition,
+      purchase_date,
+      assigned_to,
+      status,
+      location,
+      vendor_id 
+    } = req.body;
     
     const item = await prisma.item.create({
       data: {
         item_name,
-        description,
-        serial_id,
-        location,
         org_id,
+        serial_id,
+        description,
+        condition,
+        purchase_date: new Date(purchase_date),
+        assigned_to,
+        status,
+        location,
         vendor_id,
-        status: "available",
-        condition: "Good"
+        item_pic: req.file ? `${req.file.originalname}` : 'default.jpg'
       }
     });
     
@@ -93,7 +114,11 @@ router.post("/", upload.single("image"), async (req, res) => {
     
     res.json({ success: true, item });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    if (error.code === 'P2002') {
+      res.status(400).json({ error: 'Serial ID must be unique' });
+    } else {
+      res.status(400).json({ error: error.message });
+    }
   }
 });
 

@@ -9,17 +9,17 @@ datasource db {
 
 model item {
   item_id       String          @id(map: "items_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  org_id        String?         @db.Uuid
+  org_id        String          @db.Uuid
   item_name     String          @db.VarChar(255)
-  serial_id     String?         @unique(map: "items_serial_id_key") @db.VarChar(100)
-  description   String?         @db.VarChar(1000)
-  condition     String?         @db.VarChar(100)
-  purchase_date DateTime?       @db.Date
-  assigned_to   String?         @db.Uuid
-  status        String?         @db.VarChar(50)
-  location      String?         @db.VarChar(255)
-  item_pic      String?         @db.VarChar(500)
-  vendor_id     String?         @db.Uuid
+  serial_id     String          @unique(map: "items_serial_id_key") @db.VarChar(100)
+  description   String          @db.VarChar(1000)
+  condition     String          @db.VarChar(100)
+  purchase_date DateTime        @db.Date
+  assigned_to   String          @db.Uuid
+  status        String          @db.VarChar(50)
+  location      String          @db.VarChar(255)
+  item_pic      String          @db.VarChar(500)
+  vendor_id     String          @db.Uuid
   user          user?           @relation(fields: [assigned_to], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "items_assigned_to_fkey")
   organization  organization?   @relation(fields: [org_id], references: [org_id], onDelete: NoAction, onUpdate: NoAction, map: "items_org_id_fkey")
   vendor        vendor?         @relation(fields: [vendor_id], references: [vendor_id], onDelete: NoAction, onUpdate: NoAction, map: "items_vendor_id_fkey")

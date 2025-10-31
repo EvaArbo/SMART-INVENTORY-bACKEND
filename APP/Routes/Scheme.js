@@ -18,7 +18,6 @@ const PostMan = require("./../Controller/Scheme/Postman");
 const MulterMultiFiles = require("./../Middleware/Multer/multerMultiFiles");
 const MulterSingleFile = require("./../Middleware/Multer/multerSingleFile");
 
-// 🟢 LISTING
 router.get("/list-multi", ListMultiModel); // Specific first
 router.get("/list/:model", List);
 

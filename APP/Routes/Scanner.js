@@ -5,18 +5,23 @@ const prisma = require("../Controller/Prisma");
 router.get("/scan/:code", async (req, res) => {
   try {
     const { code } = req.params;
+
+    // Only compare against item_id when the code is a valid UUID. This
+    // prevents Prisma from attempting to coerce a non-UUID string into a
+    // UUID and throwing an error (e.g. serial codes like "TEST-001").
+    const isUuid = (val) => /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(val);
+
+    const where = isUuid(code)
+      ? { OR: [{ serial_id: code }, { item_id: code }] }
+      : { serial_id: code };
+
     const item = await prisma.item.findFirst({
-      where: {
-        OR: [
-          { serial_id: code },
-          { item_id: code }
-        ]
-      },
+      where,
       include: { user: true, organization: true, vendor: true }
     });
-    
+
     if (!item) return res.status(404).json({ error: "Item not found" });
-    
+
     const response = {
       item_id: item.item_id,
       serial_id: item.serial_id,
@@ -29,7 +34,7 @@ router.get("/scan/:code", async (req, res) => {
       organization: item.organization,
       vendor: item.vendor
     };
-    
+
     res.json(response);
   } catch (error) {
     res.status(400).json({ error: error.message });

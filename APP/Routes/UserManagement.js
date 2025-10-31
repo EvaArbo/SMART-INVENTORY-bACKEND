@@ -1,52 +1,70 @@
 const express = require("express");
-const nano = require("nano")(process.env.COUCHDBURL);
+const { PrismaClient } = require("@prisma/client");
 const router = express.Router();
 
-const db = nano.db.use("user_scans"); 
+const prisma = new PrismaClient();
 
 
 router.get("/", async (req, res) => {
   const { q } = req.query;
 
   try {
-    const result = await db.list({ include_docs: true });
-    let users = result.rows.map((row) => row.doc);
+    const scans = await prisma.scan_history.findMany({
+      where: q
+        ? {
+            OR: [
+              { item_name: { contains: q, mode: "insensitive" } },
+              { serial_id: { contains: q, mode: "insensitive" } }
+            ]
+          }
+        : undefined
+    });
 
-    if (q) {
-      const query = q.toLowerCase();
-      users = users.filter((u) =>
-        u.name?.toLowerCase().includes(query) ||
-        u.serial?.toLowerCase().includes(query)
-      );
-    }
-
-    res.json(users);
+    res.json(scans);
   } catch (err) {
-    console.error("Error fetching users:", err.message);
-    res.status(500).json({ error: "Failed to fetch users" });
+    console.error("Error fetching scan entries:", err.message);
+    res.status(500).json({ error: "Failed to fetch scan entries" });
   }
 });
 
 
 router.post("/", async (req, res) => {
-  const { serial, name, date, status, icon } = req.body;
+  const {
+    serial_id,
+    item_name,
+    user_id,
+    org_id,
+    scanned_at,
+    due_date,
+    status
+  } = req.body;
 
-  if (!serial || !name || !date || !status || !icon) {
+  if (
+    !serial_id ||
+    !item_name ||
+    !user_id ||
+    !org_id ||
+    !scanned_at ||
+    !due_date ||
+    !status
+  ) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
   try {
-    const newUser = {
-      serial,
-      name,
-      date,
-      status,
-      icon,
-      createdAt: new Date().toISOString(),
-    };
+    const newScan = await prisma.scan_history.create({
+      data: {
+        serial_id,
+        item_name,
+        user_id,
+        org_id,
+        scanned_at: new Date(scanned_at),
+        due_date: new Date(due_date),
+        status: status.toUpperCase()
+      }
+    });
 
-    const response = await db.insert(newUser);
-    res.status(201).json({ message: "Scan entry created", id: response.id });
+    res.status(201).json({ message: "Scan entry created", id: newScan.id });
   } catch (err) {
     console.error("Error creating scan entry:", err.message);
     res.status(500).json({ error: "Failed to create scan entry" });
@@ -57,17 +75,20 @@ router.post("/", async (req, res) => {
 router.patch("/:id", async (req, res) => {
   const { status } = req.body;
 
-  if (!["APPROVED", "DENIED", "PENDING"].includes(status)) {
+  if (!["APPROVED", "DENIED", "PENDING"].includes(status?.toUpperCase())) {
     return res.status(400).json({ error: "Invalid status value" });
   }
 
   try {
-    const doc = await db.get(req.params.id);
-    doc.status = status;
-    doc.updatedAt = new Date().toISOString();
+    const updated = await prisma.scan_history.update({
+      where: { id: req.params.id },
+      data: {
+        status: status.toUpperCase(),
+        updatedAt: new Date()
+      }
+    });
 
-    const response = await db.insert(doc);
-    res.json({ message: "Status updated", id: response.id });
+    res.json({ message: "Status updated", id: updated.id });
   } catch (err) {
     console.error("Error updating status:", err.message);
     res.status(500).json({ error: "Failed to update status" });

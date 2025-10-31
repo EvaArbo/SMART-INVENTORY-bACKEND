@@ -60,7 +60,7 @@ router.post("/", async (req, res) => {
     });
 
     res.status(201).json({
-      message: "✅ Request created successfully",
+      message: "Request created successfully",
       data: newRequest,
     });
   } catch (err) {

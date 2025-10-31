@@ -5,19 +5,28 @@ const cors = require("cors");
 const app = express();
 
 
-const PORT = process.env.PORT || 5432;
+const PORT = process.env.PORT;
 
 
 const CONFIG = require("./APP/Routes/Config");
 const SCHEME = require("./APP/Routes/Scheme");
+const ITEMS = require("./APP/Routes/Items");
+const SCANNER = require("./APP/Routes/Scanner");
+const UPLOAD = require("./APP/Routes/Upload");
+
 
 
 app.use(cors());
 app.use(express.json());
+app.use("/uploads", express.static("uploads"));
 
 
 app.use("/config", CONFIG);
 app.use("/scheme", SCHEME);
+app.use("/items", ITEMS);
+app.use("/scanner", SCANNER);
+app.use("/upload", UPLOAD);
+
 
 
 app.get("/", (req, res) => {

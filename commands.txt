@@ -39,3 +39,4 @@ tajiri init
 npx install@prisma/client
 npx prisma db pull
 npx prisma generate
+POST http://localhost:4050/requests

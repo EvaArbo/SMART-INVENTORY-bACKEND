@@ -1,6 +1,6 @@
 {
   "base": "./APP",
-  "prisma": "./prisma/schema.prisma",
+  "prisma": "./APP\\generated\\prisma\\schema.prisma",
   "type": "commonjs",
   "fieldSkip": [
     "id",

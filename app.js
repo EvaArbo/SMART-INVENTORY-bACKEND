@@ -4,17 +4,17 @@ const cors = require("cors");
 
 const app = express();
 
-const PORT = process.env.PORT || 5432;
+const PORT = process.env.PORT || 3000;
 
 const CONFIG = require("./APP/Routes/Config");
 const SCHEME = require("./APP/Routes/Scheme");
 const AUTH = require("./APP/Routes/auth");
-const PROFILE = require("./routes/profile");
-const SECURITY = require("./routes/security");
-const NOTIFICATIONS = require("./routes/notifications");
-const PRIVACY = require("./routes/privacy");
-const TERMS = require("./routes/terms");
-const SUPPORT = require("./routes/support");
+const PROFILE = require("./APP/Routes/profile");
+const SECURITY = require("./APP/Routes/security");
+const NOTIFICATIONS = require("./APP/Routes/notifications");
+const PRIVACY = require("./APP/Routes/privacy");
+const TERMS = require("./APP/Routes/terms");
+const SUPPORT = require("./APP/Routes/support");
 
 app.use(cors());
 app.use(express.json());

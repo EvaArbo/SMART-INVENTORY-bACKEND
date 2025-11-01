@@ -1,10 +1,10 @@
 const prisma = require("../Prisma");
-const nano = require("nano")(process.env.COUCHDB_URL); // For image storage
+const nano = require("nano")(process.env.COUCHDBURL); // For image storage
 const bcrypt = require("bcryptjs");
 
 const usersDB = nano.db.use("users_images"); // CouchDB database name
 
-//  GET all users
+// GET all users
 async function index(req, res, next) {
   try {
     const users = await prisma.user.findMany({
@@ -16,7 +16,47 @@ async function index(req, res, next) {
   }
 }
 
-//  CREATE new user
+// GET single user by ID
+async function show(req, res, next) {
+  try {
+    const { id } = req.params;
+    const user = await prisma.user.findUnique({
+      where: { user_id: id },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (e) {
+    next(e);
+  }
+}
+
+// SEARCH users
+async function search(req, res, next) {
+  try {
+    const { q } = req.query;
+
+    const users = await prisma.user.findMany({
+      where: {
+        OR: [
+          { full_name: { contains: q, mode: "insensitive" } },
+          { email: { contains: q, mode: "insensitive" } },
+          { department: { contains: q, mode: "insensitive" } },
+        ],
+      },
+      orderBy: { created_at: "desc" },
+    });
+
+    res.status(200).json(users);
+  } catch (e) {
+    next(e);
+  }
+}
+
+// CREATE new user
 async function create(req, res, next) {
   try {
     const { full_name, email, password, department, branch, role_id } = req.body;
@@ -85,4 +125,43 @@ async function destroy(req, res, next) {
   }
 }
 
-module.exports = { index, create, update, destroy };
+// EXPORT users as CSV
+async function exportCSV(req, res, next) {
+  try {
+    const users = await prisma.user.findMany({
+      orderBy: { created_at: "desc" },
+    });
+
+    const csvRows = [];
+    const headers = ["ID", "Full Name", "Email", "Department", "Branch", "Role", "Status"];
+    csvRows.push(headers.join(","));
+
+    users.forEach((u) => {
+      csvRows.push([
+        u.user_id,
+        u.full_name,
+        u.email,
+        u.department,
+        u.branch,
+        u.role_id,
+        u.status,
+      ].join(","));
+    });
+
+    res.setHeader("Content-Type", "text/csv");
+    res.setHeader("Content-Disposition", "attachment; filename=users.csv");
+    res.status(200).send(csvRows.join("\n"));
+  } catch (e) {
+    next(e);
+  }
+}
+
+module.exports = {
+  index,
+  show,
+  search,
+  create,
+  update,
+  destroy,
+  exportCSV,
+};

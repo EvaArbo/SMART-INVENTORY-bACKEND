@@ -64,7 +64,7 @@ model profile_info {
   profile_id      String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   user_id         String? @db.Uuid
   user_name       String? @db.VarChar(255)
-  profile_picture String? @db.VarChar(500)
+  profile_picture String @db.VarChar(500)
   email           String? @db.VarChar(255)
   phone_number    String? @db.VarChar(50)
   password        String? @db.VarChar(255)
